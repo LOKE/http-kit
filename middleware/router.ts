@@ -97,9 +97,9 @@ export class Router {
         if (r.method !== req.method) {
           continue;
         }
-        const { path } = parseUrl(req.url || "");
+        const { pathname } = parseUrl(req.url || "");
 
-        match = r.regexp.exec(path || "");
+        match = r.regexp.exec(pathname || "");
 
         if (match) {
           route = r;
