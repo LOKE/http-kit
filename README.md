@@ -44,3 +44,60 @@ registerMetrics(promClient.register);
 
 app.use(createMetricsMiddleware());
 ```
+
+### Class: Router
+
+A basic router similar to the one provided by express
+
+key differences are:
+
+- handles async errors
+- can't be nested, (can be nested inside a express `use` though)
+- supports metrics
+
+```
+const { Router } = require("@loke/http-kit");
+
+const router = new Router()
+
+router.get("/foo/:bar", async ({req, res, params }) => {
+  // get a path param
+  const foo = params.foo;
+
+  // req, res are just the standard node/express objects
+  // so this could also be `res.json({ foo })`
+  res.send(`Hello, ${foo}`);
+})
+
+app.use(router.createHandler());
+```
+
+### graceful
+
+```
+const { graceful } = require("@loke/http-kit");
+
+const PORT = 8000;
+
+async function main() {
+  const server = http.createServer(app);
+
+  const { shutdown } = graceful(server);
+
+  server.listen(PORT);
+
+  // Await stop signal
+  await stopSignal();
+
+  // Finish current requests then stop http server
+  await shutdown();
+}
+
+const stopSignal = () =>
+  new Promise(resolve => {
+    process.once("SIGINT", resolve);
+    process.once("SIGTERM", resolve);
+  });
+
+main();
+```
