@@ -44,7 +44,9 @@ export function graceful(server: Server) {
   function shutdown() {
     return new Promise((resolve, reject) => {
       server.close((err: Error) => {
-        if (err) { reject(err); }
+        if (err) {
+          reject(err);
+        }
         resolve();
       });
 

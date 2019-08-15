@@ -9,33 +9,33 @@ interface Params {
   [key: string]: string;
 }
 
-interface HandlerArg {
-  req: IncomingMessage & { routePath?: string };
-  res: ServerResponse;
+interface HandlerArg<Req, Res> {
+  req: Req & { routePath: string };
+  res: Res;
   params: Params;
 }
 
-type Handler = (arg: HandlerArg) => void | Promise<void>;
+type Handler<Req, Res> = (arg: HandlerArg<Req, Res>) => void | Promise<void>;
 
-interface Route {
+interface Route<Req, Res> {
   method: string;
   routePath: string;
-  handler: Handler;
+  handler: Handler<Req, Res>;
 }
 
-interface PopulatedRoute extends Route {
+interface PopulatedRoute<Req, Res> extends Route<Req, Res> {
   regexp: RegExp;
   keys: pathToRegexp.Key[];
 }
 
-export class Router {
-  routes: Route[];
+export class Router<Req extends IncomingMessage, Res extends ServerResponse> {
+  routes: Array<Route<Req, Res>>;
 
   constructor() {
     this.routes = [];
   }
 
-  use(pathPrefix: Router | string, router?: Router) {
+  use(pathPrefix: Router<Req, Res> | string, router?: Router<Req, Res>) {
     if (pathPrefix instanceof Router) {
       router = pathPrefix;
       pathPrefix = "/";
@@ -55,43 +55,47 @@ export class Router {
     return this;
   }
 
-  _registerHandler(method: string, routePath: string, handler: Handler) {
+  _registerHandler(
+    method: string,
+    routePath: string,
+    handler: Handler<Req, Res>
+  ) {
     this.routes.push({ method, routePath, handler });
     return this;
   }
 
-  get(routePath: string, handler: Handler) {
+  get(routePath: string, handler: Handler<Req, Res>) {
     return this._registerHandler("GET", routePath, handler);
   }
 
-  post(routePath: string, handler: Handler) {
+  post(routePath: string, handler: Handler<Req, Res>) {
     return this._registerHandler("POST", routePath, handler);
   }
 
-  put(routePath: string, handler: Handler) {
+  put(routePath: string, handler: Handler<Req, Res>) {
     return this._registerHandler("PUT", routePath, handler);
   }
 
-  patch(routePath: string, handler: Handler) {
+  patch(routePath: string, handler: Handler<Req, Res>) {
     return this._registerHandler("PATCH", routePath, handler);
   }
 
-  delete(routePath: string, handler: Handler) {
+  delete(routePath: string, handler: Handler<Req, Res>) {
     return this._registerHandler("DELETE", routePath, handler);
   }
 
   createHandler() {
     // TODO: time routing, it's pretty dumb.
-    const parsedRoutes: PopulatedRoute[] = this.routes.map((r) => {
+    const parsedRoutes: Array<PopulatedRoute<Req, Res>> = this.routes.map(r => {
       const keys: pathToRegexp.Key[] = [];
       const regexp = pathToRegexp(r.routePath, keys);
 
       return Object.assign({}, r, { regexp, keys });
     });
 
-    return (req: IncomingMessage, res: ServerResponse, next: Next) => {
+    return (req: Req, res: Res, next: Next) => {
       let match;
-      let route: PopulatedRoute | null = null;
+      let route: PopulatedRoute<Req, Res> | null = null;
 
       for (const r of parsedRoutes) {
         if (r.method !== req.method) {
@@ -127,20 +131,20 @@ export class Router {
   }
 }
 
-function handleMatch(
-  route: Route,
+function handleMatch<Req extends IncomingMessage, Res extends ServerResponse>(
+  route: Route<Req, Res>,
   params: Params,
-  req: IncomingMessage & { routePath?: string },
-  res: ServerResponse,
-  next: Next,
+  req: Req,
+  res: Res,
+  next: Next
 ) {
   Promise.resolve()
     .then(() => {
-      req.routePath = route.routePath;
+      const { routePath } = route;
 
-      return route.handler({ req, res, params });
+      return route.handler({ req: { ...req, routePath }, res, params });
     })
-    .catch((err) => next(err));
+    .catch(err => next(err));
 }
 
 function decodeParam(value?: string): string | undefined {
