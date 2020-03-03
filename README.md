@@ -6,7 +6,7 @@ A set of helpers and middleware for making http servers in node
 
 Middleware are most easily used with express
 
-```
+```js
 const express = require("express");
 
 const app = express();
@@ -16,7 +16,7 @@ const app = express();
 
 Add http logging, can be used with loke-logger v3 or just console;
 
-```
+```js
 const { createLoggingMiddleware } = require("@loke/http-kit");
 
 app.use(createLoggingMiddleware(console));
@@ -26,7 +26,7 @@ app.use(createLoggingMiddleware(console));
 
 Add basic error formatting and logging, can be used with loke-logger v3 or just console;
 
-```
+```js
 const { createErrorMiddleware } = require("@loke/http-kit");
 
 app.use(createErrorMiddleware(console));
@@ -36,7 +36,7 @@ app.use(createErrorMiddleware(console));
 
 You need to register all metrics before hand using `registerMetrics`
 
-```
+```js
 const { createMetricsMiddleware, registerMetrics } = require("@loke/http-kit");
 const promClient = require("prom-client");
 
@@ -55,26 +55,26 @@ key differences are:
 - can't be nested, (can be nested inside a express `use` though)
 - supports metrics
 
-```
+```js
 const { Router } = require("@loke/http-kit");
 
-const router = new Router()
+const router = new Router();
 
-router.get("/foo/:bar", async ({req, res, params }) => {
+router.get("/foo/:bar", async ({ req, res, params }) => {
   // get a path param
   const foo = params.foo;
 
   // req, res are just the standard node/express objects
   // so this could also be `res.json({ foo })`
   res.send(`Hello, ${foo}`);
-})
+});
 
 app.use(router.createHandler());
 ```
 
 ### graceful
 
-```
+```js
 const { graceful } = require("@loke/http-kit");
 
 const PORT = 8000;
