@@ -142,7 +142,14 @@ function handleMatch<Req extends IncomingMessage, Res extends ServerResponse>(
     .then(() => {
       const { routePath } = route;
 
-      return route.handler({ req: { ...req, routePath }, res, params });
+      const reqPlusPath: Req & { routePath?: string } = req;
+      reqPlusPath.routePath = routePath;
+
+      return route.handler({
+        req: reqPlusPath as Req & { routePath: string },
+        res,
+        params
+      });
     })
     .catch(err => next(err));
 }
