@@ -13,7 +13,7 @@
     "build": "rm -rf ./dist && tsc",
     "lint": "tslint -p ."
   },
-  "author": "Dominic Smith",
+  "author": "LOKE Engineering",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^10.12.21",
