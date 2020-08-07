@@ -2,7 +2,7 @@ import chalk from "chalk";
 import { IncomingMessage, ServerResponse } from "http";
 import onFinished from "on-finished";
 import { parse as parseUrl } from "url";
-import { createDurationTimer } from "./helpers";
+import { createDurationTimer, Next } from "./helpers";
 
 const noop = () => undefined;
 
@@ -35,7 +35,7 @@ interface LoggableRequest extends IncomingMessage {
 export function createLoggingMiddleware(logger: Logger, opts: Options = {}) {
   const { name, warnSlowThreshold = 100, criticalSlowThreshold = 200 } = opts;
 
-  return (req: LoggableRequest, res: ServerResponse, next = noop) => {
+  return (req: LoggableRequest, res: ServerResponse, next: Next = noop) => {
     const { method, url } = req;
     const end = createDurationTimer(req);
 

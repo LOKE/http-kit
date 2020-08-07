@@ -2,7 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import onFinished from "on-finished";
 import { Counter, Histogram } from "prom-client";
 import { parse } from "url";
-import { createDurationTimer } from "./helpers";
+import { createDurationTimer, Next } from "./helpers";
 
 const noop = () => undefined;
 
@@ -23,7 +23,7 @@ export function createMetricsMiddleware() {
   return (
     req: IncomingMessage & { routePath?: string },
     res: ServerResponse,
-    next = noop
+    next: Next = noop
   ) => {
     const { method = "<NONE>", url = "" } = req; // grab url at the start before the router rewrites it
     const end = createDurationTimer(req);
