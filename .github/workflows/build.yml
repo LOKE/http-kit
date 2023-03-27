@@ -16,5 +16,5 @@ jobs:
         with:
           node-version: 18
       - run: npm ci
-      - run: npm i prom-client@${{matrix.prom-client-version}}
+      - run: npm i -D prom-client@${{matrix.prom-client-version}}
       - run: npm run build
