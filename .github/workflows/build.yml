@@ -1,0 +1,21 @@
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  prom_client_matrix:
+    strategy:
+      matrix:
+        version: [12]
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm ci
+      - run: npm i prom-client@${{matrix.version}}
+      - run: npm run build
