@@ -4,12 +4,10 @@ on:
       - master
 
 jobs:
-  prom_client_matrix:
+  build:
     strategy:
       matrix:
-        version: [12]
-
-  build:
+        prom-client-version: [12]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,5 +15,5 @@ jobs:
         with:
           node-version: 18
       - run: npm ci
-      - run: npm i prom-client@${{matrix.version}}
+      - run: npm i prom-client@${{matrix.prom-client-version}}
       - run: npm run build
