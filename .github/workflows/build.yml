@@ -7,7 +7,7 @@ jobs:
   build:
     strategy:
       matrix:
-        prom-client-version: [11, 12, 13]
+        prom-client-version: [11, 12]
     runs-on: ubuntu-latest
     name: Build with Prom Client ${{matrix.prom-client-version}}
     steps:
