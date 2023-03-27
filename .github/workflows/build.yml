@@ -7,7 +7,7 @@ jobs:
   build:
     strategy:
       matrix:
-        prom-client-version: [12]
+        prom-client-version: [11, 12]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
