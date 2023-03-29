@@ -9,7 +9,7 @@ const {
   createErrorMiddleware,
   createMetricsMiddleware,
   registerMetrics,
-  Router
+  Router,
 } = require("./dist");
 
 registerMetrics(register);
@@ -19,7 +19,7 @@ const app = express();
 app.use(createLoggingMiddleware(console));
 app.use(createMetricsMiddleware());
 
-app.get("/metrics", (req, res) => res.send(register.metrics()));
+app.get("/metrics", async (req, res) => res.send(await register.metrics()));
 
 const router = new Router();
 
