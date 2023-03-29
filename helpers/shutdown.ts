@@ -42,8 +42,8 @@ export function graceful(server: Server) {
   server.on("request", observeRequest);
 
   function shutdown() {
-    return new Promise((resolve, reject) => {
-      server.close((err: Error) => {
+    return new Promise<void>((resolve, reject) => {
+      server.close((err?: Error) => {
         if (err) {
           reject(err);
         }

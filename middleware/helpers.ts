@@ -35,7 +35,10 @@ export function createDurationTimer(req: IncomingMessage): EndTimer {
   return end;
 }
 
-export function addressToString(addr: string | AddressInfo) {
+export function addressToString(addr: string | AddressInfo | null) {
+  if (addr === null) {
+    return "";
+  }
   if (typeof addr === "string") {
     return addr;
   }
