@@ -4,17 +4,27 @@ on:
       - master
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run lint
+
   build:
     strategy:
       matrix:
-        prom-client-version: [11, 12, 13, 14]
+        prom-client-version: [11, 12, 13, 14, 15]
     runs-on: ubuntu-latest
     name: Build with Prom Client ${{matrix.prom-client-version}}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
       - run: npm ci
       - run: npm i -D prom-client@${{matrix.prom-client-version}}
       - run: npm run build

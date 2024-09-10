@@ -1,5 +1,5 @@
 import { join as joinPath } from "path";
-import pathToRegexp from "path-to-regexp";
+import { pathToRegexp, Key } from "path-to-regexp";
 import { parse as parseUrl } from "url";
 
 import { IncomingMessage, ServerResponse } from "http";
@@ -25,11 +25,11 @@ interface Route<Req, Res> {
 
 interface PopulatedRoute<Req, Res> extends Route<Req, Res> {
   regexp: RegExp;
-  keys: pathToRegexp.Key[];
+  keys: Key[];
 }
 
 export class Router<Req extends IncomingMessage, Res extends ServerResponse> {
-  routes: Array<Route<Req, Res>>;
+  routes: Route<Req, Res>[];
 
   constructor() {
     this.routes = [];
@@ -86,9 +86,8 @@ export class Router<Req extends IncomingMessage, Res extends ServerResponse> {
 
   createHandler() {
     // TODO: time routing, it's pretty dumb.
-    const parsedRoutes: Array<PopulatedRoute<Req, Res>> = this.routes.map(r => {
-      const keys: pathToRegexp.Key[] = [];
-      const regexp = pathToRegexp(r.routePath, keys);
+    const parsedRoutes: PopulatedRoute<Req, Res>[] = this.routes.map((r) => {
+      const { keys, regexp } = pathToRegexp(r.routePath);
 
       return Object.assign({}, r, { regexp, keys });
     });
@@ -148,10 +147,10 @@ function handleMatch<Req extends IncomingMessage, Res extends ServerResponse>(
       return route.handler({
         req: reqPlusPath as Req & { routePath: string },
         res,
-        params
+        params,
       });
     })
-    .catch(err => next(err));
+    .catch((err) => next(err));
 }
 
 function decodeParam(value?: string): string | undefined {
