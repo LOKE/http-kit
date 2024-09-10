@@ -56,10 +56,14 @@ export function createLoggingMiddleware(logger: Logger, opts: Options = {}) {
           path,
           formatResponseStatus(statusCode),
           // req.error ? req.error.message : undefined,
-          formatResponseTime(duration, warnSlowThreshold, criticalSlowThreshold)
+          formatResponseTime(
+            duration,
+            warnSlowThreshold,
+            criticalSlowThreshold,
+          ),
         ]
           .filter(Boolean)
-          .join(" ")
+          .join(" "),
       );
     });
 
@@ -79,7 +83,7 @@ function parseUseragent(agentStr?: string) {
 function formatResponseTime(
   duration: [number, number],
   warn: number,
-  critical: number
+  critical: number,
 ): string {
   const [s, n] = duration;
   const milliseconds = s * 1e3 + n / 1e6;

@@ -10,7 +10,7 @@ export function createErrorMiddleware(logger: ErrorLogger) {
     err: HttpError,
     req: IncomingMessage,
     res: ServerResponse,
-    next: Next
+    next: Next,
   ) => {
     const statusCode = err.statusCode || err.status || 500;
 
@@ -27,9 +27,9 @@ export function createErrorMiddleware(logger: ErrorLogger) {
       res,
       {
         message: "Internal Error - Please contact support.",
-        code: "INTERNAL_ERROR"
+        code: "INTERNAL_ERROR",
       },
-      statusCode
+      statusCode,
     );
   };
 }
@@ -37,13 +37,13 @@ export function createErrorMiddleware(logger: ErrorLogger) {
 function writeError(
   res: ServerResponse,
   err: { message: string; code?: string },
-  statusCode: number
+  statusCode: number,
 ) {
   res.writeHead(statusCode, { "Content-Type": "application/json" });
   res.end(
     JSON.stringify({
       message: err.message,
-      code: err.code
-    })
+      code: err.code,
+    }),
   );
 }

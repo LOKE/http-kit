@@ -7,25 +7,25 @@ export const connectionCount = new Counter({
   name: "server_connections_total",
   help: "The total tcp socket connections created",
   labelNames: ["address"],
-  registers: []
+  registers: [],
 });
 export const connections = new Gauge({
   name: "server_connections",
   help: "The current number connected tcp sockets",
   labelNames: ["address"],
-  registers: []
+  registers: [],
 });
 export const unusedConnections = new Gauge({
   name: "server_unused_connections",
   help: "The current number of tcp sockets yet to be used",
   labelNames: ["address"],
-  registers: []
+  registers: [],
 });
 export const inFlightRequests = new Gauge({
   name: "server_requests_in_flight",
   help: "The number of http requests in flight",
   labelNames: ["address"],
-  registers: []
+  registers: [],
 });
 
 export function instrumentConnections(server: Server) {
@@ -67,7 +67,9 @@ export function instrumentConnections(server: Server) {
       inFlightRequests.inc({ address });
 
       const recordDone = () => {
-        if (done) { return; }
+        if (done) {
+          return;
+        }
         inFlightRequests.dec({ address });
         done = true;
       };

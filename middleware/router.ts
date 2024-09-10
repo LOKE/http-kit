@@ -58,7 +58,7 @@ export class Router<Req extends IncomingMessage, Res extends ServerResponse> {
   _registerHandler(
     method: string,
     routePath: string,
-    handler: Handler<Req, Res>
+    handler: Handler<Req, Res>,
   ) {
     this.routes.push({ method, routePath, handler });
     return this;
@@ -135,7 +135,7 @@ function handleMatch<Req extends IncomingMessage, Res extends ServerResponse>(
   params: Params,
   req: Req,
   res: Res,
-  next: Next
+  next: Next,
 ) {
   Promise.resolve()
     .then(() => {

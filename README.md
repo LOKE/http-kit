@@ -94,7 +94,7 @@ async function main() {
 }
 
 const stopSignal = () =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     process.once("SIGINT", resolve);
     process.once("SIGTERM", resolve);
   });

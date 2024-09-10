@@ -10,20 +10,20 @@ export const requestCounter = new Counter({
   name: "http_requests_total",
   help: "Total number of HTTP requests made.",
   labelNames: ["method", "path", "code"],
-  registers: []
+  registers: [],
 });
 export const requestTimer = new Histogram({
   name: "http_request_duration_seconds",
   help: "The HTTP request latencies in seconds.",
   labelNames: ["method", "path"],
-  registers: []
+  registers: [],
 });
 
 export function createMetricsMiddleware() {
   return (
     req: IncomingMessage & { routePath?: string },
     res: ServerResponse,
-    next: Next = noop
+    next: Next = noop,
   ) => {
     const { method = "<NONE>", url = "" } = req; // grab url at the start before the router rewrites it
     const end = createDurationTimer(req);
