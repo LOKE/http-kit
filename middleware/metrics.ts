@@ -19,7 +19,9 @@ export const requestTimer = new Histogram({
   registers: [],
 });
 
-export function createMetricsMiddleware() {
+export function createMetricsMiddleware(
+  opts: { trackAllFoundPaths?: boolean } = {},
+) {
   return (
     req: IncomingMessage & { routePath?: string },
     res: ServerResponse,
@@ -32,7 +34,17 @@ export function createMetricsMiddleware() {
       const { routePath } = req;
       const { statusCode } = res;
 
-      const path = routePath || parse(url).pathname || "<NONE>";
+      let path = routePath;
+      if (!path) {
+        if (statusCode === 404) {
+          path = "<NOT_FOUND>";
+        } else if (opts.trackAllFoundPaths) {
+          path = parse(url).pathname ?? "<UNKNOWN>";
+        } else {
+          path = "<UNTRACKED>";
+        }
+      }
+
       const [s, n] = end();
       const seconds = s + n / 1e9;
 
