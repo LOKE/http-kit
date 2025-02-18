@@ -36,6 +36,14 @@ app.use(createErrorMiddleware(console));
 
 You need to register all metrics before hand using `registerMetrics`
 
+The `path` label will be populated based on the `req.routePath`, the `Router`
+class will automatically populate this for you. Or you can manually set it if
+you are using a different router.
+
+Alternatively you can use the `trackAllFoundPaths` option to track the path of
+all requests that don't result in a 404. This must be used with caution as
+unconstrained labels can explode the number of metrics.
+
 ```js
 const { createMetricsMiddleware, registerMetrics } = require("@loke/http-kit");
 const promClient = require("prom-client");
