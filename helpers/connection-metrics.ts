@@ -72,6 +72,13 @@ export function instrumentConnections(server: Server) {
         }
         inFlightRequests.dec({ address });
         done = true;
+
+        // Remove both listeners once we've recorded completion. Keep-alive
+        // sockets serve many sequential requests, so a per-request "close"
+        // listener that is only removed when the socket eventually closes
+        // accumulates and trips MaxListenersExceededWarning.
+        res.removeListener("finish", recordDone);
+        req.socket.removeListener("close", recordDone);
       };
 
       res.once("finish", recordDone);
