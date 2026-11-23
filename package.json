@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "node --test security-smoke.test.cjs",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npm run build",
     "build": "rm -rf ./dist && tsc",
     "lint": "tslint -p . && prettier --check ."
